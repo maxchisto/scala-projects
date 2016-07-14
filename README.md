@@ -1,2 +1,2 @@
-# scala-projects
-Everything related to Scala goes in here
+## scala-projects
+ - `progfun1` - Functional Programming Principles in Scala
