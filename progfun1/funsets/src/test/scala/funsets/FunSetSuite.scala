@@ -77,6 +77,7 @@ class FunSetSuite extends FunSuite {
     val s1 = singletonSet(1)
     val s2 = singletonSet(2)
     val s3 = singletonSet(3)
+    val s22 = singletonSet(2)
   }
 
   /**
@@ -109,6 +110,18 @@ class FunSetSuite extends FunSuite {
       assert(!contains(s, 3), "Union 3")
     }
   }
+
+  test("intersect contains no elements when no overlap") {
+    new TestSets {
+      val s =intersect(s1,s2)
+      assert(!contains(s,1), "Intersect 1")
+      assert(!contains(s,2), "Intersect 2")
+    }
+    new TestSets {
+      val s =intersect(s22,s2)
+      assert(contains(s,2), "Intersect 3")
+    }
+  } 
 
 
 }
