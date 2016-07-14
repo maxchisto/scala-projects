@@ -111,17 +111,28 @@ class FunSetSuite extends FunSuite {
     }
   }
 
-  test("intersect contains no elements when no overlap") {
+  test("intersect sets works as expected") {
     new TestSets {
-      val s =intersect(s1,s2)
+      val s = intersect(s1,s2)
       assert(!contains(s,1), "Intersect 1")
       assert(!contains(s,2), "Intersect 2")
     }
     new TestSets {
-      val s =intersect(s22,s2)
+      val s = intersect(s22,s2)
       assert(contains(s,2), "Intersect 3")
     }
-  } 
+  }
+
+  test("diff works as expected") {
+    new TestSets {
+      val sa = union(s1,s2)
+      val sb = union(s2,s3)
+      val s = diff(sb,sa)
+      assert(!contains(s,1),"Diff 1")
+      assert(!contains(s,2),"Diff 2")
+      assert(contains(s,3),"Diff 3")
+    }
+  }
 
 
 }
