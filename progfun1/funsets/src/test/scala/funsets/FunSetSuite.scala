@@ -145,5 +145,16 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("forall works as expected") {
+    new TestSets {
+      def p1(x: Int): Boolean =  x > 0
+      def p2(x: Int): Boolean =  x < 0
+
+      val s = union(s1,s2)
+      assert(forall(s,p1),"Forall 1")
+      assert(!forall(s,p2),"Forall 2")
+    }
+  }
+
 
 }
