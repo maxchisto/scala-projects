@@ -156,5 +156,17 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("exists works as expected") {
+    new TestSets {
+      def p1(x: Int): Boolean =  x > 0
+      def p2(x: Int): Boolean =  x < 0
+      def p3(x: Int): Boolean =  x > 1
+
+      val s = union(s1,s2)
+      assert(exists(s,p1),"Exists 1")
+      assert(!exists(s,p2),"Exists 2")
+      assert(exists(s,p3),"Exists 3")
+    }
+  }
 
 }
