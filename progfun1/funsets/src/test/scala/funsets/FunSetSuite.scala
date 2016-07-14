@@ -169,4 +169,17 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("map works as expected") {
+    new TestSets {
+      def plusTwo(x: Int): Int = x+2
+
+      val sa = union(s1,s2)
+      val s = map(sa,plusTwo)
+      assert(!contains(s,1),"Map 1")
+      assert(!contains(s,2),"Map 2")
+      assert(contains(s,3),"Map 3")
+      assert(contains(s,4),"Map 4")
+    }
+  }
+
 }
