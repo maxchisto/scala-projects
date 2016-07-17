@@ -41,7 +41,7 @@ abstract class TweetSet {
    * Question: Can we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def filter(p: Tweet => Boolean): TweetSet = ???
+    def filter(p: Tweet => Boolean): TweetSet = filterAcc(p, new Empty)
   
   /**
    * This is a helper method for `filter` that propagetes the accumulated tweets.
@@ -54,7 +54,8 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def union(that: TweetSet): TweetSet = ???
+    def union(that: TweetSet): TweetSet
+      
   
   /**
    * Returns the tweet from this set which has the greatest retweet count.
@@ -107,11 +108,9 @@ abstract class TweetSet {
 }
 
 class Empty extends TweetSet {
-    def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+  def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = new Empty
   
-  /**
-   * The following methods are already implemented
-   */
+  def union(that: TweetSet): TweetSet = that 
 
   def contains(tweet: Tweet): Boolean = false
 
@@ -124,13 +123,26 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
-    def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = ???
+    def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
+      val leftAcc = left.filterAcc(p, acc)
+      val rightAcc = right.filterAcc(p, leftAcc)
+      
+      if (p(elem))
+        rightAcc.incl(elem)
+      else
+        rightAcc
+    }
   
+   def union(that: TweetSet): TweetSet = {
+     val unionLeft = left.union(that)
+     val unionRight = right.union(unionLeft)
     
-  /**
-   * The following methods are already implemented
-   */
-
+     if (unionRight.contains(elem))
+       unionRight
+     else
+       unionRight.incl(elem)
+   }
+  
   def contains(x: Tweet): Boolean =
     if (x.text < elem.text) left.contains(x)
     else if (elem.text < x.text) right.contains(x)
@@ -180,14 +192,14 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-    lazy val googleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = ???
   lazy val appleTweets: TweetSet = ???
   
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-     lazy val trending: TweetList = ???
+  lazy val trending: TweetList = ???
   }
 
 object Main extends App {
