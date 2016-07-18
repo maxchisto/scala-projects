@@ -66,7 +66,7 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def mostRetweeted: Tweet = ???
+    def mostRetweeted: Tweet
   
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -77,7 +77,10 @@ abstract class TweetSet {
    * Question: Should we implment this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-    def descendingByRetweet: TweetList = ???
+    def descendingByRetweet: TweetList
+
+
+    def isEmpty: Boolean
   
   /**
    * The following methods are already implemented
@@ -110,7 +113,14 @@ abstract class TweetSet {
 class Empty extends TweetSet {
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = new Empty
   
-  def union(that: TweetSet): TweetSet = that 
+  def union(that: TweetSet): TweetSet = that
+
+  def mostRetweeted = 
+    throw new java.util.NoSuchElementException("mostRetweeted of Empty TweetSet") 
+
+  def descendingByRetweet = Nil
+
+  def isEmpty = true
 
   def contains(tweet: Tweet): Boolean = false
 
@@ -126,7 +136,7 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
       val leftAcc = left.filterAcc(p, acc)
       val rightAcc = right.filterAcc(p, leftAcc)
-      
+
       if (p(elem))
         rightAcc.incl(elem)
       else
@@ -143,6 +153,29 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
        unionRight.incl(elem)
    }
   
+
+  def mostRetweeted: Tweet = {
+    if (left.isEmpty && right.isEmpty)
+      elem
+    else if (left.isEmpty)
+      if (elem.retweets < right.mostRetweeted.retweets)
+        right.mostRetweeted
+      else
+        elem
+    else if (elem.retweets < left.mostRetweeted.retweets)
+      left.mostRetweeted
+    else
+      elem
+
+  }
+
+  def descendingByRetweet: TweetList = {
+    val topTweet = this.mostRetweeted
+    new Cons(topTweet, this.remove(topTweet).descendingByRetweet)
+  }
+  
+  def isEmpty = false
+
   def contains(x: Tweet): Boolean =
     if (x.text < elem.text) left.contains(x)
     else if (elem.text < x.text) right.contains(x)
