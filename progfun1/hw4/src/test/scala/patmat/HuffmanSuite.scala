@@ -47,9 +47,30 @@ class HuffmanSuite extends FunSuite {
   test("create CodeTree") {
     val charList = string2Chars("hello, world")
     val result = createCodeTree(charList)
-    print(result)
+    println(result)
   }
 
+  test("Decode letter without remainder") {
+    new TestTrees {
+      assert(decodeLetter(t1, List(0)) === ('a',List()) )
+    }
+  }
+
+  test("Decode letter with remainder") {
+    new TestTrees {
+      assert(decodeLetter(t1, List(0,1)) === ('a',List(1)) )
+    }
+  }
+
+  test("Decode a simple string") {
+    new TestTrees {
+      assert(decode(t1, List(0,1)) === List('a','b') )
+    }
+  }
+
+  test("Print secret msg supplied with the homework") {
+    println(decodedSecret)
+  }
 
   test("decode and encode a very short text should be identity") {
     new TestTrees {
