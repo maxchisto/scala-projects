@@ -84,4 +84,10 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("Convert method") {
+    new TestTrees {
+      println( convert(t2) )
+    }
+  }
+
 }
