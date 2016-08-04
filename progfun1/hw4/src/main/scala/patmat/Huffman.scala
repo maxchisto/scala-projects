@@ -200,11 +200,29 @@ object Huffman {
 
   // Part 4a: Encoding using Huffman tree
 
+  // Checks if a letter present in the tree
+  def hasLetter(tree: CodeTree, char: Char): Boolean = tree match {
+    case Fork(_,_,chars,_) => chars.contains(char)
+    case Leaf(leafChar,_) => char == leafChar
+  }
+
+  // Encodes a single letter
+  def encodeLetter(tree: CodeTree, char: Char): List[Bit] = tree match {
+    case Fork(left, right, chars, _) => hasLetter(left,char) match {
+      case true => 0 :: encodeLetter(left, char)
+      case _ => 1 :: encodeLetter(right, char)
+    }
+    case Leaf(char,_) => List()
+  }
+
+
   /**
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+    text.map{x => encodeLetter(tree,x)}.flatten
+  }
   
   // Part 4b: Encoding using code table
 
